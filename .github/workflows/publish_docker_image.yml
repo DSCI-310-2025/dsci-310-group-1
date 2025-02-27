@@ -1,14 +1,11 @@
 name: Build and Publish Docker Image
 
 on:
-  workflow_dispatch: # allows to manually trigger the GitHub Actions workflow
+  workflow_dispatch:  # Allows manual trigger
   push:
-    branches:
-      - main  
     paths:
-    - "Dockerfile"
-    - "conda-linux-64.lock"
-
+      - "Dockerfile"
+      - .github/workflows/publish_docker_image.yml
 
 jobs:
   build:
@@ -24,10 +21,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/dsci-310-group-01:latest .
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_USERNAME }}/dsci-310-group-01
+          tags: |
+            type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
+            type=raw, value=latest
 
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/dsci-310-group-01:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

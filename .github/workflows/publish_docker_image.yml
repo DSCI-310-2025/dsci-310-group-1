@@ -3,6 +3,9 @@ name: Build and Publish Docker Image
 on:
   workflow_dispatch: # allows to manually trigger the GitHub Actions workflow
   push:
+    branches:
+      - main  
+    paths:
     - "Dockerfile"
     - "conda-linux-64.lock"
 

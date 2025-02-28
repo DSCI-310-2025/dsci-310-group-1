@@ -28,6 +28,7 @@ git clone https://github.com/DSCI-310-2025/dsci-310-group-01.git
 cd dsci-310-group-01
 ```
 **2. Start the Docker Container**
+
 Ensure Docker Desktop is installed and running. Then, in the project directory, run:
 ```sh
 docker-compose up -d

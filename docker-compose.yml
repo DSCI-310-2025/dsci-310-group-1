@@ -1,0 +1,8 @@
+services:
+  analysis:
+    image: yuwen07/dsci-310-group-01:latest  # DockerHub image
+    ports:
+      - "8787:8787"  # RStudio Server
+    volumes:
+      - .:/home/rstudio/project  # Mounts local files into the container
+    restart: unless-stopped
